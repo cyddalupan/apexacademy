@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
             'company' => \App\Http\Middleware\CheckCompany::class,
         ]);
+
+        $middleware->prependToGroup('web', \App\Http\Middleware\DevAutoLogin::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
