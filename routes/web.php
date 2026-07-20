@@ -5,12 +5,14 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/auth.php';
 
+// Role-based redirect
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'redirect'])->name('dashboard');
 });
 
-// Super Admin
+// Super Admin routes
 Route::middleware(['auth', 'role:super_admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
+    Route::get('/', fn () => redirect('/super-admin/dashboard'));
     Route::get('/dashboard', [App\Http\Controllers\SuperAdmin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/companies', [App\Http\Controllers\SuperAdmin\DashboardController::class, 'companies'])->name('companies.index');
     Route::get('/companies/create', [App\Http\Controllers\SuperAdmin\DashboardController::class, 'companiesCreate'])->name('companies.create');
@@ -25,6 +27,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('super-admin')->name('su
 
 // Admin (company-scoped)
 Route::middleware(['auth', 'role:admin', 'company'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', fn () => redirect('/admin/dashboard'));
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/employees', [App\Http\Controllers\Admin\DashboardController::class, 'employees'])->name('employees.index');
     Route::get('/employees/create', [App\Http\Controllers\Admin\DashboardController::class, 'employeesCreate'])->name('employees.create');
